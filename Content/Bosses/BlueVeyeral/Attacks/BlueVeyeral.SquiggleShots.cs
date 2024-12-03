@@ -40,7 +40,7 @@ public partial class BlueVeyeral
                     NPC.GetSource_FromAI(),
                     NPC.Center + dir.ToRotationVector2() * 64,
                     dir.ToRotationVector2() * 7,
-                    50,
+                    NPC.damage,
                     0.04f,
                     MathHelper.ToRadians(20),
                     0.174f * direction,

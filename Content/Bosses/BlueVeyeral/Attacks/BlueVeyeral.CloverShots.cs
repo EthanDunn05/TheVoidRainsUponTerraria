@@ -37,7 +37,7 @@ public partial class BlueVeyeral
                     NPC.GetSource_FromAI(),
                     NPC.Center,
                     dir.ToRotationVector2() * 8,
-                    50,
+                    NPC.damage,
                     0.04f,
                     BulletTypes.VoidBright
                 );
@@ -47,7 +47,7 @@ public partial class BlueVeyeral
                     NPC.GetSource_FromAI(),
                     NPC.Center,
                     dir.ToRotationVector2() * 8,
-                    50,
+                    NPC.damage,
                     0.04f,
                     BulletTypes.VoidBright
                 );

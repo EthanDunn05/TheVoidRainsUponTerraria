@@ -33,7 +33,7 @@ public partial class BlueVeyeral
                     NPC.GetSource_FromAI(),
                     NPC.Center + offset,
                     dir.ToRotationVector2() * shotSpeed,
-                    50,
+                    NPC.damage,
                     0.4f,
                     turn,
                     60,

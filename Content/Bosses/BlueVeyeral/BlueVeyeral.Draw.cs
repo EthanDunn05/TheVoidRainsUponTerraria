@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
@@ -28,19 +29,9 @@ public partial class BlueVeyeral
         // Limit frames
         blinkFrame %= 7;
         overlayFrame %= 24;
-        wobbleTimer %= 60;
 
         // Wobble
-        if (wobbleTimer < 30)
-        {
-            wobbleScale = Vector2.Lerp(new Vector2(1.05f, 0.95f), new Vector2(0.95f, 1.05f),
-                EasingHelper.QuadInOut(Utils.GetLerpValue(0, 30, wobbleTimer)));
-        }
-        else
-        {
-            wobbleScale = Vector2.Lerp(new Vector2(0.95f, 1.05f), new Vector2(1.05f, 0.95f),
-                EasingHelper.QuadInOut(Utils.GetLerpValue(30, 60, wobbleTimer)));
-        }
+        wobbleScale = new Vector2(1 + 0.05f * MathF.Sin(wobbleTimer), 1 - 0.05f * MathF.Sin(wobbleTimer));
 
         DrawBody(spriteBatch, drawColor);
         DrawIris(spriteBatch, drawColor);
@@ -60,7 +51,7 @@ public partial class BlueVeyeral
         spriteBatch.Draw(
             texture, drawPos,
             NPC.frame, NPC.GetAlpha(drawColor),
-            NPC.rotation, origin, wobbleScale,
+            NPC.rotation, origin, wobbleScale * NPC.scale,
             SpriteEffects.None, 0f);
     }
 
@@ -75,7 +66,7 @@ public partial class BlueVeyeral
         spriteBatch.Draw(
             texture, drawPos,
             frame, NPC.GetAlpha(drawColor),
-            NPC.rotation, origin, wobbleScale,
+            NPC.rotation, origin, NPC.scale,
             SpriteEffects.None, 0f);
     }
 
@@ -89,7 +80,7 @@ public partial class BlueVeyeral
         spriteBatch.Draw(
             texture, drawPos,
             frame, NPC.GetAlpha(drawColor),
-            NPC.rotation, origin, wobbleScale,
+            NPC.rotation, origin, NPC.scale,
             SpriteEffects.None, 0f);
     }
 
@@ -103,7 +94,7 @@ public partial class BlueVeyeral
         spriteBatch.Draw(
             texture, drawPos,
             frame, NPC.GetAlpha(drawColor),
-            NPC.rotation, origin, wobbleScale,
+            NPC.rotation, origin, NPC.scale,
             SpriteEffects.None, 0f);
     }
 
@@ -119,7 +110,7 @@ public partial class BlueVeyeral
         spriteBatch.Draw(
             texture, drawPos,
             frame, col,
-            NPC.rotation, origin, wobbleScale * 3,
+            NPC.rotation, origin, wobbleScale * 3 * NPC.scale,
             SpriteEffects.None, 0f);
     }
 

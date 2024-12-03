@@ -10,6 +10,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using VoidRains.Common;
+using VoidRains.Helpers;
 
 namespace VoidRains.Content.Projectiles;
 
@@ -85,25 +86,26 @@ public class Bullet : ModProjectile
     
     // Bullet Types //
 
-    public static Projectile SpawnBasic(IEntitySource source, Vector2 position, Vector2 velocity, int damage,
+    public static Projectile? SpawnBasic(IEntitySource source, Vector2 position, Vector2 velocity, int damage,
         float knockback, BulletType bulletType)
     {
         var typeIndex = BulletTypes.TypeArray.IndexOf(bulletType);
-        var proj = Projectile.NewProjectileDirect(source, position, velocity, ModContent.ProjectileType<Bullet>(), damage,
+        var proj = ProjectileHelper.NewUnscaledProjectile(source, position, velocity, ModContent.ProjectileType<Bullet>(), damage,
             knockback, ai0: typeIndex);
+        if (proj is null) return proj;
         
-        if (Main.netMode != NetmodeID.SinglePlayer && proj.owner == Main.myPlayer)
-            NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, proj.whoAmI);
+        NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, proj.whoAmI);
 
         return proj;
     }
     
-    public static Projectile SpawnTurning(IEntitySource source, Vector2 position, Vector2 velocity, int damage,
+    public static Projectile? SpawnTurning(IEntitySource source, Vector2 position, Vector2 velocity, int damage,
         float knockback, float turnStart, int turnChangeTime, float turnEnd, BulletType bulletType)
     {
         var typeIndex = BulletTypes.TypeArray.IndexOf(bulletType);
-        var proj =  Projectile.NewProjectileDirect(source, position, velocity, ModContent.ProjectileType<Bullet>(), damage,
+        var proj = ProjectileHelper.NewUnscaledProjectile(source, position, velocity, ModContent.ProjectileType<Bullet>(), damage,
             knockback, ai0: typeIndex);
+        if (proj is null) return proj;
 
         var modProj = (Bullet) proj.ModProjectile;
         modProj.syncTurn = true;
@@ -112,26 +114,25 @@ public class Bullet : ModProjectile
         modProj.ChangeTurnTimer = turnChangeTime;
         modProj.ChangedTurn = turnEnd;
         
-        if (Main.netMode != NetmodeID.SinglePlayer && proj.owner == Main.myPlayer)
-            NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, proj.whoAmI);
+        NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, proj.whoAmI);
 
         return proj;
     }
     
-    public static Projectile SpawnWaveTurn(IEntitySource source, Vector2 position, Vector2 velocity, int damage,
+    public static Projectile? SpawnWaveTurn(IEntitySource source, Vector2 position, Vector2 velocity, int damage,
         float knockback, float turnSinScale, float turnSinAcc, BulletType bulletType)
     {
         var typeIndex = BulletTypes.TypeArray.IndexOf(bulletType);
-        var proj =  Projectile.NewProjectileDirect(source, position, velocity, ModContent.ProjectileType<Bullet>(), damage,
+        var proj = ProjectileHelper.NewUnscaledProjectile(source, position, velocity, ModContent.ProjectileType<Bullet>(), damage,
             knockback, ai0: typeIndex);
+        if (proj is null) return proj;
 
         var modProj = (Bullet) proj.ModProjectile;
         modProj.syncTurnSin = true;
         modProj.TurnSinScale = turnSinScale;
         modProj.TurnSinAcc = turnSinAcc;
         
-        if (Main.netMode != NetmodeID.SinglePlayer && proj.owner == Main.myPlayer)
-            NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, proj.whoAmI);
+        NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, proj.whoAmI);
 
         return proj;
     }

@@ -38,7 +38,7 @@ public partial class BlueVeyeral
                     NPC.GetSource_FromAI(),
                     NPC.Center + spawnOffset,
                     dir.ToRotationVector2() * 10,
-                    50,
+                    NPC.damage,
                     0.04f,
                     type
                 );

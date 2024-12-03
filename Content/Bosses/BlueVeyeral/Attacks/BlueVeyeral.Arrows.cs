@@ -40,7 +40,7 @@ public partial class BlueVeyeral
             for (var i = 0; i < 6; i++)
             {
                 var dir = MathHelper.Lerp(0, MathHelper.TwoPi, Utils.GetLerpValue(0, 6, i));
-                CommonPatterns.Arrow(NPC.GetSource_FromAI(), NPC.Center, dir + offset, 15, 50, 0.4f,
+                CommonPatterns.Arrow(NPC.GetSource_FromAI(), NPC.Center, dir + offset, 15, NPC.damage, 0.4f,
                     BulletTypes.Radiant);
             }
         }
@@ -52,7 +52,7 @@ public partial class BlueVeyeral
             for (var i = 0; i < 7; i++)
             {
                 var dir = MathHelper.Lerp(0, MathHelper.TwoPi, Utils.GetLerpValue(0, 7, i));
-                CommonPatterns.Arrow(NPC.GetSource_FromAI(), NPC.Center, dir + offset, 12, 50, 0.4f, BulletTypes.VoidBright);
+                CommonPatterns.Arrow(NPC.GetSource_FromAI(), NPC.Center, dir + offset, 12, NPC.damage, 0.4f, BulletTypes.VoidBright);
             }
         }
 
@@ -60,7 +60,7 @@ public partial class BlueVeyeral
         {
             SoundEngine.PlaySound(BulletTypes.Radiant2.ShootSound, NPC.Center);
             CommonPatterns.Arrow(NPC.GetSource_FromAI(), NPC.Center,
-                NPC.Center.DirectionTo(TargetPlayer.Center).ToRotation(), 18, 50, 0.4f, BulletTypes.Radiant2);
+                NPC.Center.DirectionTo(TargetPlayer.Center).ToRotation(), 18, NPC.damage, 0.4f, BulletTypes.Radiant2);
         }
 
         return false;

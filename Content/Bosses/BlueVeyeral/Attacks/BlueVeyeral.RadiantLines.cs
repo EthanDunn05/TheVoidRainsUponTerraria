@@ -34,7 +34,7 @@ public partial class BlueVeyeral
                 NPC.GetSource_FromAI(),
                 NPC.Center + eyePos,
                 NPC.Center.DirectionTo(TargetPlayer.Center) * 15,
-                50,
+                NPC.damage,
                 0.04f,
                 BulletTypes.Radiant
             );

@@ -3,6 +3,8 @@ NPCs: {
 		DisplayName: Blue Veyeral
 		FlavorText: Yep
 	}
+
+	BlueBall.DisplayName: Blue Veyeral
 }
 
 Projectiles: {
@@ -12,4 +14,15 @@ Projectiles: {
 	Bullet.DisplayName: Bullet
 	TurningBullet.DisplayName: Turning Bullet
 	WaveTurnBullet.DisplayName: Wave Turn Bullet
+}
+
+Items: {
+	DefectsHeartItem: {
+		Tooltip:
+			'''
+			Not Consumable
+			[c/B428FF:Summons the perfect being]
+			'''
+		DisplayName: Defect's Heart
+	}
 }

@@ -1,0 +1,15 @@
+NPCs: {
+	BlueVeyeral: {
+		DisplayName: Blue Veyeral
+		FlavorText: Yep
+	}
+}
+
+Projectiles: {
+	RadBullet.DisplayName: Rad Bullet
+	VoidBullet.DisplayName: Void Bullet
+	RadBullet2.DisplayName: Rad Bullet2
+	Bullet.DisplayName: Bullet
+	TurningBullet.DisplayName: Turning Bullet
+	WaveTurnBullet.DisplayName: Wave Turn Bullet
+}

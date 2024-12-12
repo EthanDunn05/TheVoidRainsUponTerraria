@@ -52,4 +52,13 @@ public class DefectsHeartItem : ModItem
 
         return true;
     }
+
+    public override void AddRecipes()
+    {
+        Recipe.Create(Type, 1)
+            .AddTile(TileID.LunarCraftingStation)
+            .AddIngredient(ItemID.LunarBar, 10)
+            .AddIngredient(ItemID.FragmentNebula, 5)
+            .Register();
+    }
 }

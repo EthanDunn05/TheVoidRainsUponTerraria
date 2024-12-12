@@ -20,6 +20,14 @@ public partial class BlueVeyeral : BossNPC
         NPCID.Sets.BossBestiaryPriority.Add(Type);
         NPCID.Sets.SpecificDebuffImmunity[Type][BuffID.ShadowFlame] = true;
         NPCID.Sets.MPAllowedEnemies[Type] = true;
+
+        NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers()
+        {
+            CustomTexturePath = "VoidRains/Assets/Textures/Bestiary/BlueVeyeral_Preview",
+            PortraitScale = 0.6f,
+            PortraitPositionYOverride = 0f
+        };
+        NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
     }
 
     public override void SetDefaults()
@@ -61,7 +69,7 @@ public partial class BlueVeyeral : BossNPC
     public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
     {
         bestiaryEntry.Info.AddRange([
-            new MoonLordPortraitBackgroundProviderBestiaryInfoElement(),
+            BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Times.NightTime,
             new FlavorTextBestiaryInfoElement("Mods.VoidRains.NPCs.BlueVeyeral.FlavorText")
         ]);
     }
@@ -100,5 +108,10 @@ public partial class BlueVeyeral : BossNPC
     public override void RecieveBossAI(BinaryReader reader)
     {
         phaseTracker.Deserialize(reader);
+    }
+
+    public override void OnKill()
+    {
+        DownBossSystem.downedBlueVeyeral = true;
     }
 }

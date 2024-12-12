@@ -2,6 +2,7 @@ NPCs: {
 	BlueVeyeral: {
 		DisplayName: Blue Veyeral
 		FlavorText: The perfect being
+		SpawnInfo: Use [i:{0}] anywhere.
 	}
 
 	BlueBall.DisplayName: Blue Veyeral
@@ -22,5 +23,14 @@ Items: {
 			[c/B428FF:Summons the perfect being]
 			'''
 		DisplayName: Defect's Heart
+	}
+}
+
+MusicDisplay: {
+	ModName: The Void Rains Upon Her Heart
+
+	BlueVeyeral: {
+		Author: by Angel Polanco
+		DisplayName: Me, Myself, and Eye
 	}
 }

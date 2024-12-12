@@ -12,6 +12,7 @@ public class TextureRegistry
     public static Asset<Texture2D> Tex(string name) => ModContent.Request<Texture2D>($"VoidRains/Assets/Textures/{name}", AssetRequestMode.ImmediateLoad);
     public static Asset<Texture2D> Boss(string name) => Tex("Boss/" + name);
     public static Asset<Texture2D> Bullet(string name) => Tex("Bullets/" + name);
+    public static Asset<Texture2D> Beam(string name) => Tex("Beams/" + name);
     
     
     // Vanilla textures

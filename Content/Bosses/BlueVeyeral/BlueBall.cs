@@ -53,6 +53,8 @@ public class BlueBall : ModNPC
             NPC.velocity = new Vector2(5 * NPC.ai[0], 0);
             firstFrame = false;
         }
+
+        if (!NPC.AnyNPCs(ModContent.NPCType<BlueVeyeral>())) NPC.active = false;
         
         overlayFrame++;
         wobbleTimer += 0.1f;
@@ -61,6 +63,11 @@ public class BlueBall : ModNPC
         NPC.Opacity = MathF.Min(1f, NPC.Opacity + 0.05f);
         if (NPC.Opacity < 1f) NPC.damage = 0;
         else NPC.damage = NPC.defDamage;
+    }
+    
+    public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
+    {
+        return false;
     }
 
     public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)

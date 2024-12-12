@@ -24,7 +24,8 @@ public class BulletLimitSystem : ModSystem
     {
         limitedTypes =
         [
-            ModContent.ProjectileType<Bullet>()
+            ModContent.ProjectileType<Bullet>(),
+            ModContent.ProjectileType<GravityBullet>()
         ];
     }
 

@@ -1,19 +1,17 @@
 NPCs: {
 	BlueVeyeral: {
 		DisplayName: Blue Veyeral
-		FlavorText: Yep
+		FlavorText: The perfect being
 	}
 
 	BlueBall.DisplayName: Blue Veyeral
 }
 
 Projectiles: {
-	RadBullet.DisplayName: Rad Bullet
-	VoidBullet.DisplayName: Void Bullet
-	RadBullet2.DisplayName: Rad Bullet2
 	Bullet.DisplayName: Bullet
-	TurningBullet.DisplayName: Turning Bullet
-	WaveTurnBullet.DisplayName: Wave Turn Bullet
+	GravityBullet.DisplayName: Bullet
+	Beam.DisplayName: Beam
+	TrackingBeam.DisplayName: Beam
 }
 
 Items: {

@@ -18,12 +18,8 @@ namespace VoidRains.Content.Projectiles;
 /// This projectile is an adaptation of the bullet object in TVRUHH.
 /// Most of the bullet features were taken directly from the game with some minor tweaks to work with Terraria.
 /// </summary>
-public class Bullet : ModProjectile
+public class Bullet : BaseBullet
 {
-    // The index of the type is synced
-    private BulletType BulletType => BulletTypes.TypeArray[(int) Projectile.ai[0]];
-    public override string Texture => TextureRegistry.InvisPath;
-    
     // Data //
     
     // There are exactly 8 for compactly sending as one byte
@@ -42,12 +38,12 @@ public class Bullet : ModProjectile
     public float SpeedAcc = 0f;
     public float Turn = 0f;
     public float TurnAcc = 0f;
-    public float SpeedSin = 0f;
     public float SpeedSinAcc = 0f;
     public float SpeedSinScale = 0f;
-    public float TurnSin = 0f;
     public float TurnSinAcc = 0f;
     public float TurnSinScale = 0f;
+    private float speedSin = 0f;
+    private float turnSin = 0f;
     
     // Timers
     public int ChangeSpeedTimer = -1;
@@ -70,19 +66,6 @@ public class Bullet : ModProjectile
     public bool LimitTurn = true;
 
     private Vector2? startVel;
-
-    public override void SetDefaults()
-    {
-        Projectile.width = 5;
-        Projectile.height = 5;
-        Projectile.hostile = true;
-        Projectile.tileCollide = false;
-        Projectile.hide = true;
-    }
-
-    public override void SetStaticDefaults()
-    {
-    }
     
     // Bullet Types //
 
@@ -94,8 +77,26 @@ public class Bullet : ModProjectile
             knockback, ai0: typeIndex);
         if (proj is null) return proj;
         
-        NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, proj.whoAmI);
+        var modProj = (Bullet) proj.ModProjectile;
+        proj.Sync();
+        
+        return proj;
+    }
+    
+    public static Projectile? SpawnSpeedChange(IEntitySource source, Vector2 position, Vector2 velocity, int damage,
+        float knockback, int speedChangeTime, float speedEnd, BulletType bulletType)
+    {
+        var typeIndex = BulletTypes.TypeArray.IndexOf(bulletType);
+        var proj = ProjectileHelper.NewUnscaledProjectile(source, position, velocity, ModContent.ProjectileType<Bullet>(), damage,
+            knockback, ai0: typeIndex);
+        if (proj is null) return proj;
 
+        var modProj = (Bullet) proj.ModProjectile;
+        modProj.syncSpeedAccChange = true;
+        modProj.ChangeSpeedTimer = speedChangeTime;
+        modProj.ChangedSpeed = speedEnd;
+        
+        proj.Sync();
         return proj;
     }
     
@@ -114,8 +115,39 @@ public class Bullet : ModProjectile
         modProj.ChangeTurnTimer = turnChangeTime;
         modProj.ChangedTurn = turnEnd;
         
-        NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, proj.whoAmI);
+        proj.Sync();
+        return proj;
+    }
+    
+    public static Projectile? SpawnAccelerated(IEntitySource source, Vector2 position, Vector2 velocity, int damage,
+        float knockback, float acceleration, BulletType bulletType)
+    {
+        var typeIndex = BulletTypes.TypeArray.IndexOf(bulletType);
+        var proj = ProjectileHelper.NewUnscaledProjectile(source, position, velocity, ModContent.ProjectileType<Bullet>(), damage,
+            knockback, ai0: typeIndex);
+        if (proj is null) return proj;
 
+        var modProj = (Bullet) proj.ModProjectile;
+        modProj.SpeedAcc = acceleration;
+        
+        proj.Sync();
+        return proj;
+    }
+    
+    public static Projectile? SpawnWaveSpeed(IEntitySource source, Vector2 position, Vector2 velocity, int damage,
+        float knockback, float speedSinScale, float speedSinAcc, BulletType bulletType)
+    {
+        var typeIndex = BulletTypes.TypeArray.IndexOf(bulletType);
+        var proj = ProjectileHelper.NewUnscaledProjectile(source, position, velocity, ModContent.ProjectileType<Bullet>(), damage,
+            knockback, ai0: typeIndex);
+        if (proj is null) return proj;
+
+        var modProj = (Bullet) proj.ModProjectile;
+        modProj.syncSpeedSin = true;
+        modProj.SpeedSinScale = speedSinScale;
+        modProj.SpeedSinAcc = speedSinAcc;
+        
+        proj.Sync();
         return proj;
     }
     
@@ -132,8 +164,7 @@ public class Bullet : ModProjectile
         modProj.TurnSinScale = turnSinScale;
         modProj.TurnSinAcc = turnSinAcc;
         
-        NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, proj.whoAmI);
-
+        proj.Sync();
         return proj;
     }
     
@@ -161,8 +192,8 @@ public class Bullet : ModProjectile
 
         if (SpeedSinScale != 0f)
         {
-            SpeedSin += SpeedSinAcc;
-            speed += SpeedSinScale * MathF.Sin(SpeedSin);
+            speedSin += SpeedSinAcc;
+            speed += SpeedSinScale * MathF.Sin(speedSin);
         }
 
         dir += Turn;
@@ -170,8 +201,8 @@ public class Bullet : ModProjectile
 
         if (TurnSinScale != 0f)
         {
-            TurnSin += TurnSinAcc;
-            dir += TurnSinScale * MathF.Sin(TurnSin);
+            turnSin += TurnSinAcc;
+            dir += TurnSinScale * MathF.Sin(turnSin);
         }
 
         // Convert direction and speed back into the velocity vector
@@ -183,15 +214,7 @@ public class Bullet : ModProjectile
             if (Vector2.Dot(Projectile.velocity, (Vector2) startVel) < 0) Projectile.active = false;
         }
         
-        // Visuals
         Projectile.rotation = Projectile.velocity.ToRotation();
-        
-        Projectile.frameCounter++;
-        if (Projectile.frameCounter >= 2)
-        {
-            Projectile.frame = (Projectile.frame + 1) % BulletType.Frames;
-            Projectile.frameCounter = 0;
-        }
     }
 
     private void ManageTimer(ref int timer, ref float value, float changedValue)
@@ -204,33 +227,6 @@ public class Bullet : ModProjectile
 
         value = changedValue;
         timer = -1; // Disable timer when done
-    }
-    
-    // Drawing //
-
-    public override bool PreDraw(ref Color lightColor)
-    {
-        // Eventually this will need to be adapted for fire bullets since those aren't centered
-        
-        var drawPos = Projectile.Center - Main.screenPosition;
-        var texture = BulletType.Texture.Value;
-        var frame = texture.Frame(verticalFrames: BulletType.Frames, frameY: Projectile.frame);
-        var origin = texture.Size() / new Vector2(1, BulletType.Frames) * 0.5f;
-
-        Main.spriteBatch.Draw(
-            texture, drawPos,
-            frame, Color.White,
-            Projectile.rotation, origin, Projectile.scale,
-            SpriteEffects.None, 0f);
-
-        return false;
-    }
-    
-    public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs,
-        List<int> behindProjectiles, List<int> overPlayers,
-        List<int> overWiresUI)
-    {
-        behindNPCs.Add(index);
     }
     
     // Syncing //
@@ -257,14 +253,14 @@ public class Bullet : ModProjectile
         
         if (syncSpeedSin)
         {
-            writer.Write(SpeedSin);
+            writer.Write(speedSin);
             writer.Write(SpeedSinScale);
             writer.Write(SpeedSinAcc);
         }
 
         if (syncTurnSin)
         {
-            writer.Write(TurnSin);
+            writer.Write(turnSin);
             writer.Write(TurnSinScale);
             writer.Write(TurnSinAcc);
         }
@@ -322,14 +318,14 @@ public class Bullet : ModProjectile
         
         if (syncSpeedSin)
         {
-            SpeedSin = reader.ReadSingle();
+            speedSin = reader.ReadSingle();
             SpeedSinScale = reader.ReadSingle();
             SpeedSinAcc = reader.ReadSingle();
         }
 
         if (syncTurnSin)
         {
-            TurnSin = reader.ReadSingle();
+            turnSin = reader.ReadSingle();
             TurnSinScale = reader.ReadSingle();
             TurnSinAcc = reader.ReadSingle();
         }

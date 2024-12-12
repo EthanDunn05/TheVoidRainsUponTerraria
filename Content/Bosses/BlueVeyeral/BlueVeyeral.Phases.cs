@@ -1,5 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
+using Terraria;
+using Terraria.Audio;
 using VoidRains.Common;
+using VoidRains.Content.Projectiles;
 using VoidRains.Helpers.StateManagement;
 
 namespace VoidRains.Content.Bosses.BlueVeyeral;
@@ -7,6 +10,7 @@ namespace VoidRains.Content.Bosses.BlueVeyeral;
 public partial class BlueVeyeral
 {
     public PhaseState Phase1 => new(Phase1AI, EnterPhase1);
+    public PhaseState Phase2 => new(Phase2AI, EnterPhase2);
 
     public void EnterPhase1()
     {
@@ -40,13 +44,49 @@ public partial class BlueVeyeral
 
     public void Phase1AI()
     {
-        EyeLookAt(TargetPlayer.Center);
-        
+        if (AttackManager.InWindDown)
+        {
+            if (NPC.GetLifePercent() <= 0.75f)
+            {
+                SoundEngine.PlaySound(SoundRegistry.VoidRainsDeath, NPC.Center);
+                phaseTracker.NextPhase();
+            }
+            
+            NPC.SimpleFlyMovement(NPC.DirectionTo(TargetPlayer.Center + new Vector2(0, -300)) * 10, 0.1f);
+        }
+
+        AttackManager.RunAttackPattern();
+    }
+
+    public void EnterPhase2()
+    {
+        AttackManager.Reset();
+        AttackManager.SetAttackPattern([
+            new AttackState(() => Rain(150), 0),
+            new AttackState(() => TrackingBeam(150), 300),
+            new AttackState(() => WaveTurnBursts(300), 300),
+            new AttackState(() => OvertakeTurnBurrsts(300), 300),
+            new AttackState(() => Rain(300), 300),
+            new AttackState(() => WaveTurnBursts(300), 300),
+            new AttackState(() => OvertakeTurnBurrsts(300), 300),
+        ]);
+
+        AttackManager.AiTimer = 120;
+    }
+
+    public void Phase2AI()
+    {
         if (AttackManager.InWindDown)
         {
             NPC.SimpleFlyMovement(NPC.DirectionTo(TargetPlayer.Center + new Vector2(0, -300)) * 10, 0.1f);
         }
-
+        
+        ballsAnimation ??= CreateBallsAnimation();
+        if (ballsAnimation.RunAnimation())
+        {
+            ballsAnimation.Reset();
+        }
+        
         AttackManager.RunAttackPattern();
     }
 }

@@ -12,6 +12,9 @@ public partial class BlueVeyeral
 {
     // <0, 0> is the center of the boss
     private Vector2 eyePos = Vector2.Zero;
+    public Vector2 LookGoal = Vector2.Zero;
+    public bool LookAtPlayer = true;
+    public float lookEase = 0.15f;
 
     // <0, 0> is the center of the eye
     private Vector2 pupilPos = Vector2.Zero;
@@ -114,24 +117,28 @@ public partial class BlueVeyeral
             SpriteEffects.None, 0f);
     }
 
-    private void EyeLookAt(Vector2 position)
+    private void LookProcess()
     {
         const float maxEyeDist = 30f;
         const float maxPupilDist = 5f;
 
-        eyePos = position - NPC.Center;
-        if (eyePos.Length() > maxEyeDist)
+        var goalEyePos = LookGoal - NPC.Center;
+        if (goalEyePos.Length() > maxEyeDist)
         {
-            eyePos.Normalize();
-            eyePos *= maxEyeDist;
+            goalEyePos.Normalize();
+            goalEyePos *= maxEyeDist;
         }
+        
+        eyePos = Vector2.Lerp(eyePos, goalEyePos, lookEase);
 
-        pupilPos = position - eyePos - NPC.Center;
-        if (pupilPos.Length() > maxPupilDist)
+        var goalPupilPos = LookGoal - eyePos - NPC.Center;
+        if (goalPupilPos.Length() > maxPupilDist)
         {
-            pupilPos.Normalize();
-            pupilPos *= maxPupilDist;
+            goalPupilPos.Normalize();
+            goalPupilPos *= maxPupilDist;
         }
+        
+        pupilPos = Vector2.Lerp(pupilPos, goalPupilPos, lookEase);
     }
 
     private void BlinkProcess()

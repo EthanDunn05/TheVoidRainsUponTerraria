@@ -39,11 +39,23 @@ public partial class BlueVeyeral : BossNPC
         NPC.SpawnWithHigherTime(30);
         NPC.boss = true;
         NPC.aiStyle = -1;
+        NPC.hide = true;
 
         if (!Main.dedServ)
         {
             Music = MusicLoader.GetMusicSlot(Mod, "Assets/Music/BlueVeyeral");
         }
+    }
+
+    public override void DrawBehind(int index)
+    {
+        Main.instance.DrawCacheNPCsOverPlayers.Add(index);
+    }
+
+    public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
+    {
+        scale = 1.5f;
+        return null;
     }
 
     public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
@@ -59,7 +71,8 @@ public partial class BlueVeyeral : BossNPC
         NPC.TargetClosest();
 
         phaseTracker = new PhaseTracker([
-            Phase1
+            Phase1,
+            Phase2,
         ]);
     }
 
@@ -73,7 +86,10 @@ public partial class BlueVeyeral : BossNPC
     {
         overlayFrame++;
         wobbleTimer += 0.1f;
+        if (LookAtPlayer) LookGoal = TargetPlayer.Center;
+        
         BlinkProcess();
+        LookProcess();
     }
 
     public override void SendBossAI(BinaryWriter writer)

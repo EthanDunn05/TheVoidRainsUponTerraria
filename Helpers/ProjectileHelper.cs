@@ -50,4 +50,9 @@ public static class ProjectileHelper
     {
         return NewUnscaledProjectile(source, center.X, center.Y, velocity.X, velocity.Y, type, damage, knockback, owner, ai0, ai1, ai2);
     }
+
+    public static void Sync(this Projectile self)
+    {
+        NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, self.whoAmI);
+    }
 }

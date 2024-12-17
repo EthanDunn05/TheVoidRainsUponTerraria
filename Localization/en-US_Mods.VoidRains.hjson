@@ -36,6 +36,7 @@ Projectiles: {
 	GravityBullet.DisplayName: Bullet
 	Beam.DisplayName: Beam
 	TrackingBeam.DisplayName: Beam
+	SafetyZone.DisplayName: Safety Zone
 }
 
 Items: {
@@ -64,5 +65,12 @@ MusicDisplay: {
 	BlueVeyeral: {
 		Author: by Angel Polanco
 		DisplayName: Me, Myself, and Eye
+	}
+}
+
+Buffs: {
+	OutsideZoneBuff: {
+		Description: Taking damage by being outside a safety zone!
+		DisplayName: Outside Safety Zone
 	}
 }

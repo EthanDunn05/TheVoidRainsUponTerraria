@@ -6,6 +6,29 @@ NPCs: {
 	}
 
 	BlueBall.DisplayName: Blue Veyeral
+
+	HerHeartNPC: {
+		TownNPCMood: {
+			LikeBiome: Living in {BiomeName} is so nice! I love all the critters!
+			LoveBiome: "{BiomeName} is so colorful! I love it!"
+			HateCrowded: There's way too many people!
+			DislikeCrowded: There's too many people here.
+			LoveSpace: I love being able to spread my wings with this much space!
+			FarFromHome: I am too far from home.
+			NoHome: I need somewhere to go for when it rains.
+			Content: Everything is fine.
+			// Party Girl
+			LoveNPC: "{NPCName} never lets anything get her down! She's so cool!"
+			// Clothier
+			LikeNPC: "{NPCName} really gets me you know?"
+			LikeNPC_Princess: I can't believe {NPCName} is a real princess!
+			Princess_LovesNPC: "{NPCName} is always so full of love!"
+		}
+
+		DisplayName: Zaraden
+		FlavorText: A young Zaraden woman with a heart full of love.
+		Census.SpawnCondition: When Eye of Cthulhu has been defeated
+	}
 }
 
 Projectiles: {
@@ -23,6 +46,15 @@ Items: {
 			[c/B428FF:Summons the perfect being]
 			'''
 		DisplayName: Defect's Heart
+	}
+}
+
+Dialogue: {
+	HerHeart: {
+		Standard1: I love you!
+		Standard2: Why do you have to kill monsters?
+		Standard3: I hope you can forgive the monsters!
+		Standard4: Hello!
 	}
 }
 
